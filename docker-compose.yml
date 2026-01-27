@@ -1,0 +1,26 @@
+﻿version: "3.9"
+
+services:
+  task_tracker:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+    - "8080:8080"
+    container_name: task_tracker_web_api
+    depends_on:
+      - postgres
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=task-tracker
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:
+    
