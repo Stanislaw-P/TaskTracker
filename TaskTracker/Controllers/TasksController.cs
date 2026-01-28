@@ -10,7 +10,7 @@ namespace TaskTracker.Controllers
 {
     [ApiController]
     [Route("api/tasks")]
-    public class TasksController : Controller
+    public class TasksController : ControllerBase
     {
         readonly ITaskItemRepository _taskItemRepository;
         readonly ITaskExecutorRepository _executorRepository;
