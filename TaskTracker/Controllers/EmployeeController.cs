@@ -28,9 +28,9 @@ namespace TaskTracker.Controllers
 
                 return Ok(employees);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -45,9 +45,9 @@ namespace TaskTracker.Controllers
 
                 return Ok(employee);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -71,9 +71,9 @@ namespace TaskTracker.Controllers
                 await _employeesRepository.AddAsync(newEmployee);
                 return Ok();
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -99,9 +99,9 @@ namespace TaskTracker.Controllers
                 await _employeesRepository.UpdateAsync(existingEmployee);
                 return Ok();
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -118,9 +118,9 @@ namespace TaskTracker.Controllers
                 await _employeesRepository.DeleteAsync(existingEmployee);
                 return Ok();
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
     }

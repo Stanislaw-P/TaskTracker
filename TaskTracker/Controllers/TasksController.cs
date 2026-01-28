@@ -47,9 +47,9 @@ namespace TaskTracker.Controllers
                 });
                 return Ok(response);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -81,9 +81,9 @@ namespace TaskTracker.Controllers
                 };
                 return Ok(response);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -110,9 +110,9 @@ namespace TaskTracker.Controllers
                 await _taskItemRepository.AddAsync(newTaskItem);
                 return Ok();
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -132,9 +132,9 @@ namespace TaskTracker.Controllers
                 await _taskItemRepository.UpdateAsync(existingTask);
                 return Ok();
             }
-            catch
+            catch(Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -182,9 +182,9 @@ namespace TaskTracker.Controllers
 
                 return Ok();
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
 
@@ -229,9 +229,9 @@ namespace TaskTracker.Controllers
                 await _taskItemRepository.DeleteAsync(existingTask);
                 return Ok();
             }
-            catch 
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
     }
