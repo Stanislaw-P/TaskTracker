@@ -132,7 +132,7 @@ namespace TaskTracker.Controllers
                 await _taskItemRepository.UpdateAsync(existingTask);
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -154,7 +154,7 @@ namespace TaskTracker.Controllers
                 };
 
                 await _executorRepository.AddAsync(executor);
-                
+
                 return Ok();
             }
             catch
@@ -196,7 +196,7 @@ namespace TaskTracker.Controllers
                 return NotFound();
 
             if (task.RowVersion != request.RowVersion)
-                return Conflict("Задача была изменена другим пользователем");
+                return Conflict("Конфликт версий данных. Текущая версия задачи отличается от отправленной.");
 
             try
             {
@@ -208,7 +208,7 @@ namespace TaskTracker.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 return Conflict("Конфликт изменения статуса задачи");
             }

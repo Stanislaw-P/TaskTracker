@@ -68,6 +68,7 @@ namespace TaskTracker.Controllers
                 {
                     Name = request.Name
                 };
+
                 await _groupRepository.AddAsync(newGroup);
                 return Ok();
             }

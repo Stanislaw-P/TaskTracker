@@ -24,6 +24,7 @@ builder.Services.AddTransient<ITaskItemRepository, TaskItemInDbRepository>();
 builder.Services.AddTransient<ITaskExecutorRepository, TaskExecutorInDbRepository>();
 builder.Services.AddTransient<ITaskWatcherRepository, TaskWatcherInDbRepository>();
 builder.Services.AddTransient<ITaskGroupRepository, TaskGroupInDbRepository>();
+builder.Services.AddTransient<IProjectsRepository, ProjectsInDbRepository>();
 
 var app = builder.Build();
 
