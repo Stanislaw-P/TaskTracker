@@ -63,5 +63,10 @@ namespace TaskTracker.db.Repositories
             _databaseContext.TaskItems.Remove(taskItem);
             await _databaseContext.SaveChangesAsync();
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await _databaseContext.SaveChangesAsync();
+        }
     }
 }

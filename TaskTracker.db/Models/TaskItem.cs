@@ -23,6 +23,8 @@ namespace TaskTracker.db.Models
         public TaskItemStatus Status { get; set; }
         public TaskPriority Priority { get; set; }
 
+        public uint RowVersion { get; private set; }
+
         public List<TaskExecutor> Executors { get; set; } = new List<TaskExecutor>();
         public List<TaskWatcher> Watchers { get; set; } = new List<TaskWatcher>();
 
@@ -53,6 +55,40 @@ namespace TaskTracker.db.Models
             Priority = priority;
 
             CreatedAt = DateTime.UtcNow;
+        }
+
+        public void ChangeStatus(TaskItemStatus newStatus)
+        {
+            if (!IsValidTransition(Status, newStatus))
+                throw new InvalidOperationException(
+                    $"Недопустимый переход статуса: {Status} → {newStatus}");
+
+            Status = newStatus;
+        }
+
+        private static bool IsValidTransition(TaskItemStatus current, TaskItemStatus next)
+        {
+            return current switch
+            {
+                TaskItemStatus.Backlog => next is
+                    TaskItemStatus.Current or
+                    TaskItemStatus.Cancelled,
+
+                TaskItemStatus.Current => next is
+                    TaskItemStatus.Active or
+                    TaskItemStatus.Cancelled,
+
+                TaskItemStatus.Active => next is
+                    TaskItemStatus.Testing or
+                    TaskItemStatus.Cancelled,
+
+                TaskItemStatus.Testing => next is
+                    TaskItemStatus.Active or
+                    TaskItemStatus.Done or
+                    TaskItemStatus.Cancelled,
+
+                _ => false // Done, Cancelled — конечные
+            };
         }
     }
 }

@@ -33,6 +33,13 @@ namespace TaskTracker.db
                 .HasIndex(x => x.UserName)
                 .IsUnique();
 
+            modelBuilder.Entity<TaskItem>()
+               .Property(e => e.RowVersion)
+               .HasColumnName("xmin")
+               .HasColumnType("xid")
+               .IsConcurrencyToken()
+               .ValueGeneratedOnAddOrUpdate();
+
             SeedEmployees(modelBuilder);
             SeedProjects(modelBuilder);
             SeedTaskGroups(modelBuilder);

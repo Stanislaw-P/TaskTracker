@@ -4,10 +4,9 @@
     {
         Backlog = 1,
         Current = 2,
-        InProgress = 3,
-        Review = 4,
-        Testing = 5,
-        Done = 6,
-        Cancelled = 7
+        Active = 3,
+        Testing = 4,
+        Done = 5,
+        Cancelled = 6
     }
 }

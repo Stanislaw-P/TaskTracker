@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TaskTracker.db.Helpers;
 using TaskTracker.db.Models;
 using TaskTracker.db.Repositories;
@@ -40,6 +41,7 @@ namespace TaskTracker.Controllers
                     CreatedAt = t.CreatedAt,
                     Status = t.Status,
                     Priority = t.Priority,
+                    RowVersion = t.RowVersion,
                     ExecutorIds = t.Executors.Select(e => e.EmployeeId).ToList(),
                     WatcherIds = t.Watchers.Select(w => w.EmployeeId).ToList()
                 });
@@ -73,6 +75,7 @@ namespace TaskTracker.Controllers
                     CreatedAt = task.CreatedAt,
                     Status = task.Status,
                     Priority = task.Priority,
+                    RowVersion = task.RowVersion,
                     ExecutorIds = task.Executors.Select(e => e.EmployeeId).ToList(),
                     WatcherIds = task.Watchers.Select(w => w.EmployeeId).ToList()
                 };
@@ -180,6 +183,53 @@ namespace TaskTracker.Controllers
                 return Ok();
             }
             catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{taskId}/status")]
+        public async Task<IActionResult> ChangeStatusAsync(int taskId, ChangeTaskStatusRequest request)
+        {
+            var task = await _taskItemRepository.TryGetByIdAsync(taskId);
+            if (task == null)
+                return NotFound();
+
+            if (task.RowVersion != request.RowVersion)
+                return Conflict("Задача была изменена другим пользователем");
+
+            try
+            {
+                task.ChangeStatus(request.NewStatus);
+                await _taskItemRepository.SaveChangesAsync();
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                return Conflict("Конфликт изменения статуса задачи");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            try
+            {
+                var existingTask = await _taskItemRepository.TryGetByIdAsync(id);
+                if (existingTask == null)
+                    return NotFound();
+
+                if (existingTask.Status == TaskItemStatus.Active || existingTask.Status == TaskItemStatus.Testing)
+                    return BadRequest("Удалять задачу можно только в начальных и конечных статусах");
+
+                await _taskItemRepository.DeleteAsync(existingTask);
+                return Ok();
+            }
+            catch 
             {
                 return BadRequest();
             }

@@ -13,6 +13,7 @@ namespace TaskTracker.Models
         public DateTime CreatedAt { get; set; }
         public TaskItemStatus Status { get; set; }
         public TaskPriority Priority { get; set; }
+        public uint RowVersion { get; set; }
 
         public List<int> ExecutorIds { get; set; } = new List<int>();
         public List<int> WatcherIds { get; set; } = new List<int>();
