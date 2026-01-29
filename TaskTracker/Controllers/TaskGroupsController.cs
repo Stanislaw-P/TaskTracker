@@ -70,7 +70,7 @@ namespace TaskTracker.Controllers
                 };
 
                 await _groupRepository.AddAsync(newGroup);
-                return Ok();
+                return Ok(new { newGroupId = newGroup.Id });
             }
             catch (Exception ex)
             {

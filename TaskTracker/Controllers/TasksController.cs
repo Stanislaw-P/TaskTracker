@@ -108,7 +108,7 @@ namespace TaskTracker.Controllers
                     taskItem.Priority);
 
                 await _taskItemRepository.AddAsync(newTaskItem);
-                return Ok();
+                return Ok(new { newTaskId = newTaskItem.Id });
             }
             catch (Exception ex)
             {

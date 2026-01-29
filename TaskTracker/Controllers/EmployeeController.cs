@@ -69,7 +69,9 @@ namespace TaskTracker.Controllers
                 };
 
                 await _employeesRepository.AddAsync(newEmployee);
-                return Ok();
+
+                return Ok(new { newEmployeeId = newEmployee.Id });
+
             }
             catch (Exception ex)
             {

@@ -81,7 +81,7 @@ namespace TaskTracker.Controllers
                 };
 
                 await _projectsRepository.AddAsync(newProject);
-                return Ok();
+                return Ok(new { newProjectId = newProject.Id });
             }
             catch (Exception ex)
             {
