@@ -26,6 +26,11 @@ namespace TaskTracker.db.Repositories
         {
             return await _databaseContext.TaskGroups
                 .Include(tg => tg.Tasks)
+                .ThenInclude(t => t.Executors)
+                .ThenInclude(w => w.Employee)
+                .Include(tg => tg.Tasks)
+                .ThenInclude(t => t.Watchers)
+                .ThenInclude(w => w.Employee)
                 .FirstOrDefaultAsync(tg => tg.Id == id);
         }
 
