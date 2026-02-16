@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
+using System.Threading.Tasks;
 using TaskTracker.db.Helpers;
 using TaskTracker.db.Models;
 using TaskTracker.db.Repositories;
@@ -233,6 +236,48 @@ namespace TaskTracker.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("{id}/pdf")]
+        public async Task<IActionResult> GetTaskPdfAsync(int id)
+        {
+            var existingTask = await _taskItemRepository.TryGetByIdAsync(id);
+            if (existingTask == null)
+                return NotFound(new
+                {
+                    Title = "Задача не найдена",
+                    Detail = $"Задача с Id {id} не существует."
+                });
+
+            var document = Document.Create(containter =>
+            {
+                containter.Page(page =>
+                {
+                    page.Margin(1, Unit.Centimetre);
+                    page.Header().Text($"Отчет по задаче: {existingTask.Title}").FontSize(20).SemiBold();
+
+                    page.Content().Column(col =>
+                    {
+                        col.Item().Text($"Проект: {existingTask.Project.Name}");
+                        col.Item().Text($"Группа: {existingTask.TaskGroup.Name}");
+                        col.Item().Text($"Статус: {existingTask.Status}");
+                        col.Item().Text($"Приоритет: {existingTask.Priority}");
+                        col.Item().PaddingTop(10).Text("Описание:").Bold();
+                        col.Item().Text(existingTask.Description);
+
+                        col.Item().PaddingTop(10).Text("Исполнители:").Bold();
+                        foreach (var exec in existingTask.Executors)
+                            col.Item().Text($"- {exec.Employee.LastName} {exec.Employee.FirstName}");
+
+                        col.Item().PaddingTop(10).Text("Наблюдатели:").Bold();
+                        foreach (var obs in existingTask.Watchers)
+                            col.Item().Text($"- {obs.Employee.LastName} {obs.Employee.FirstName}");
+                    });
+                });
+            });
+
+            byte[] pdfBytes = document.GeneratePdf();
+            return File(pdfBytes, "application/pdf", $"Task_{id}.pdf");
         }
     }
 }

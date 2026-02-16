@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using System;
 using TaskTracker.db;
 using TaskTracker.db.Repositories;
@@ -25,6 +26,9 @@ builder.Services.AddTransient<ITaskExecutorRepository, TaskExecutorInDbRepositor
 builder.Services.AddTransient<ITaskWatcherRepository, TaskWatcherInDbRepository>();
 builder.Services.AddTransient<ITaskGroupRepository, TaskGroupInDbRepository>();
 builder.Services.AddTransient<IProjectsRepository, ProjectsInDbRepository>();
+
+// Установка лицензии для QuestPDF
+QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
 

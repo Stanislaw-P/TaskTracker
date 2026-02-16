@@ -41,8 +41,12 @@ namespace TaskTracker.db.Repositories
         public async Task<TaskItem?> TryGetByIdAsync(int id)
         {
             return await _databaseContext.TaskItems
+                .Include(t => t.Project)
+                .Include(t => t.TaskGroup)
                 .Include(t => t.Watchers)
+                .ThenInclude(e => e.Employee)
                 .Include(t => t.Executors)
+                .ThenInclude(e => e.Employee)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
